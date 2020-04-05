@@ -7,11 +7,12 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include "HashTable.h"
 
 using namespace std;
 
 int cmdStat = 0;
-vector<map<string, string>> database;
+vector<vector<string>> database;
 
 void readDatabase(string fileName)
 {
@@ -22,8 +23,7 @@ void readDatabase(string fileName)
 	{
 		string temp;
 		stringstream check(line);
-		string key;
-		map<string, string> record;
+		vector<string> record;
 		int j = 0;
 		if (i != 0)
 		{
@@ -31,85 +31,65 @@ void readDatabase(string fileName)
 			{
 				switch (j)
 				{
-					case 0:
-						key = "01.FEATURE_ID";
-						record.insert(pair<string, string>(key, temp));
+					case 0: //FEATURE_ID
+						record.push_back(temp);
 						break;
-					case 1:
-						key = "02.FEATURE_NAME";
-						record.insert(pair<string, string>(key, temp));
+					case 1: //FEATURE_NAME
+						record.push_back(temp);
 						break;
-					case 2:
-						key = "03.FEATURE_CLASS";
-						record.insert(pair<string, string>(key, temp));
+					case 2: //FEATURE_CLASS
+						record.push_back(temp);
 						break;
-					case 3:
-						key = "04.STATE_ALPHA";
-						record.insert(pair<string, string>(key, temp));
+					case 3: //STATE_ALPHA
+						record.push_back(temp);
 						break;
-					case 4:
-						key = "05.STATE_NUMERIC";
-						record.insert(pair<string, string>(key, temp));
+					case 4: //STATE_NUMERIC
+						record.push_back(temp);
 						break;
-					case 5:
-						key = "06.COUNTY_NAME";
-						record.insert(pair<string, string>(key, temp));						
+					case 5: //COUNTY_NAME
+						record.push_back(temp);
 						break;
-					case 6:
-						key = "07.COUNTY_NUMERIC";
-						record.insert(pair<string, string>(key, temp));
+					case 6: //COUNTY_NUMERIC
+						record.push_back(temp);
 						break;
-					case 7:
-						key = "08.PRIMARY_LAT_DMS";
-						record.insert(pair<string, string>(key, temp));
+					case 7: //PRIMARY_LAT_DMS
+						record.push_back(temp);
 						break;
-					case 8:
-						key = "09.PRIM_LONG_DMS";
-						record.insert(pair<string, string>(key, temp));
+					case 8: //PRIM_LONG_DMS
+						record.push_back(temp);
 						break;
-					case 9:
-						key = "10.PRIM_LAT_DEC";
-						record.insert(pair<string, string>(key, temp));
+					case 9: //PRIM_LAT_DEC
+						record.push_back(temp);
 						break;
-					case 10:
-						key = "11.PRIM_LONG_DEC";
-						record.insert(pair<string, string>(key, temp));
+					case 10: //PRIM_LONG_DEC
+						record.push_back(temp);
 						break;
-					case 11:
-						key = "12.SOURCE_LAT_DMS";
-						record.insert(pair<string, string>(key, temp));
+					case 11: //SOURCE_LAT_DMS
+						record.push_back(temp);
 						break;
-					case 12:
-						key = "13.SOURCE_LONG_DMS";
-						record.insert(pair<string, string>(key, temp));
+					case 12: //SOURCE_LONG_DMS
+						record.push_back(temp);
 						break;
-					case 13:
-						key = "14.SOURCE_LAT_DEC";
-						record.insert(pair<string, string>(key, temp));
+					case 13: //SOURCE_LAT_DEC
+						record.push_back(temp);
 						break;
-					case 14:
-						key = "15.SOURCE_LONG_DEC";
-						record.insert(pair<string, string>(key, temp));
+					case 14: //SOURCE_LONG_DEC
+						record.push_back(temp);
 						break;
-					case 15:
-						key = "16.ELEV_IN_M";
-						record.insert(pair<string, string>(key, temp));
+					case 15: //ELEV_IN_M
+						record.push_back(temp);
 						break;
-					case 16:
-						key = "17.ELEV_IN_FT";
-						record.insert(pair<string, string>(key, temp));
+					case 16: //ELEV_IN_FT
+						record.push_back(temp);
 						break;
-					case 17:
-						key = "18.MAP_NAME";
-						record.insert(pair<string, string>(key, temp));
+					case 17: //MAP_NAME
+						record.push_back(temp);
 						break;
-					case 18:
-						key = "19.DATE_CREATED";
-						record.insert(pair<string, string>(key, temp));
+					case 18: //DATE_CREATED
+						record.push_back(temp);
 						break;
-					case 19:
-						key = "20.DATE_EDITED";
-						record.insert(pair<string, string>(key, temp));
+					case 19: //DATE_EDITED
+						record.push_back(temp);
 						break;
 				}
 				j++;
@@ -117,10 +97,6 @@ void readDatabase(string fileName)
 		}
 		database.push_back(record);
 		i++;
-	}
-	for (auto data : database.back())
-	{
-		cout << data.first << ": " << data.second << endl;
 	}
 }
 
@@ -294,6 +270,22 @@ void whatisin(string databaseFile, queue<T>& data)
 	cout << endl;
 }
 
+void hashing()
+{
+	HashFunction<string>* hash = new SimpleStringHash();
+	QuadraticProbing* q = new QuadraticProbing();
+	Hashtable<string> hashtable = Hashtable<string>(1024, hash, q);
+	for (int i = 0; i < database.size(); i++)
+	{
+		if (database[i].size())
+		{
+			hashtable.insert(database[i][1] + ":" + database[i][3]);
+		}
+
+	}
+	//hashtable.display();
+}
+
 template <typename T>
 void execute(int cmd, queue<T>& data)
 {
@@ -305,34 +297,36 @@ void execute(int cmd, queue<T>& data)
 	switch (cmd)
 	{
 		case 1:
-			cout << "Execute CMD: World " << endl << "World boundaries are set to: " << endl;
+			cout << "Execute CMD World: " << endl << "World boundaries are set to: " << endl;
 			world("yes", data);
 			cmdStat = 0;
 			break;
 		case 2:
-			cout << "Execute CMD: Import File Name: ";
+			cout << "Execute CMD Import: ";
+			cout << "Importing ";
 			import("yes", data);
-			cout << "Importing..." << endl;
-			cout << "Import Success!" << endl;
+			cout << "Imported! Hashing..." << endl;
+			hashing();
+			cout << "Finished!" << endl;
 			cmdStat = 0;
 			break;
 		case 3:
-			cout << "Execute CMD: Debug ";
+			cout << "Execute CMD Debug: ";
 			debug("yes", data);
 			cmdStat = 0;
 			break;
 		case 4:
-			cout << "Execute CMD: What_is_at ";
+			cout << "Execute CMD What_is_at: ";
 			whatisat("yes", data);
 			cmdStat = 0;
 			break;
 		case 5:
-			cout << "Execute CMD: What_is ";
+			cout << "Execute CMD What_is: ";
 			whatis("yes", data);
 			cmdStat = 0;
 			break;
 		case 6:
-			cout << "Execute CMD: What_is_in ";
+			cout << "Execute CMD What_is_in: ";
 			whatisin("yes", data);
 			cmdStat = 0;
 			break;
@@ -389,7 +383,6 @@ void parser(string scriptFile)
 				{
 					execute(cmdStat, data);
 					cout << "Finish parsing script" << endl;
-					system("pause");
 				}
 				else
 				{
@@ -406,6 +399,7 @@ void parser(string scriptFile)
 
 int main()
 {
-	parser("DemoScript04.txt");
+	
+	parser("DemoScript02.txt");
 	return 0;
 }
