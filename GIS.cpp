@@ -5,10 +5,124 @@
 #include <fstream>
 #include <queue>
 #include <sstream>
+#include <map>
+#include <vector>
 
 using namespace std;
 
 int cmdStat = 0;
+vector<map<string, string>> database;
+
+void readDatabase(string fileName)
+{
+	ifstream file(fileName);
+	string line;
+	int i = 0;
+	while (getline(file, line))
+	{
+		string temp;
+		stringstream check(line);
+		string key;
+		map<string, string> record;
+		int j = 0;
+		if (i != 0)
+		{
+			while (getline(check, temp, '|'))
+			{
+				switch (j)
+				{
+					case 0:
+						key = "01.FEATURE_ID";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 1:
+						key = "02.FEATURE_NAME";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 2:
+						key = "03.FEATURE_CLASS";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 3:
+						key = "04.STATE_ALPHA";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 4:
+						key = "05.STATE_NUMERIC";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 5:
+						key = "06.COUNTY_NAME";
+						record.insert(pair<string, string>(key, temp));						
+						break;
+					case 6:
+						key = "07.COUNTY_NUMERIC";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 7:
+						key = "08.PRIMARY_LAT_DMS";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 8:
+						key = "09.PRIM_LONG_DMS";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 9:
+						key = "10.PRIM_LAT_DEC";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 10:
+						key = "11.PRIM_LONG_DEC";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 11:
+						key = "12.SOURCE_LAT_DMS";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 12:
+						key = "13.SOURCE_LONG_DMS";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 13:
+						key = "14.SOURCE_LAT_DEC";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 14:
+						key = "15.SOURCE_LONG_DEC";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 15:
+						key = "16.ELEV_IN_M";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 16:
+						key = "17.ELEV_IN_FT";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 17:
+						key = "18.MAP_NAME";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 18:
+						key = "19.DATE_CREATED";
+						record.insert(pair<string, string>(key, temp));
+						break;
+					case 19:
+						key = "20.DATE_EDITED";
+						record.insert(pair<string, string>(key, temp));
+						break;
+				}
+				j++;
+			}
+		}
+		database.push_back(record);
+		i++;
+	}
+	for (auto data : database.back())
+	{
+		cout << data.first << ": " << data.second << endl;
+	}
+}
 
 void DMStoString(string dms)
 {
@@ -100,7 +214,8 @@ void import(string databaseFile, queue<T>& data)
 		}
 		else
 		{
-			cout << data.front() << " ";
+			cout << data.front() << " " << endl;
+			readDatabase(data.front());
 			data.pop();
 		}
 	}
@@ -226,11 +341,11 @@ void execute(int cmd, queue<T>& data)
 
 void parser(string scriptFile)
 {
-	std::ifstream file(scriptFile);
-	std::string line;
+	ifstream file(scriptFile);
+	string line;
 	queue<string> data;
 
-	while (std::getline(file, line))
+	while (getline(file, line))
 	{
 		
 		if (line[0] != ';')
@@ -291,6 +406,6 @@ void parser(string scriptFile)
 
 int main()
 {
-	parser("DemoScript03.txt");
+	parser("DemoScript04.txt");
 	return 0;
 }
