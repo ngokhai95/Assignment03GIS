@@ -13,9 +13,10 @@ void import(string databaseFile);
 void debug(string databaseFile);
 char cmdStat;
 
-void main()
+int main()
 {
 	parser("DemoScript01.txt");
+	return 0;
 }
 
 void parser(string scriptFile)
