@@ -1,0 +1,3 @@
+﻿  GIS.cpp
+C:\Users\ngokh\source\repos\Assignment03\GIS.cpp(16,1): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Assignment03.vcxproj -> C:\Users\ngokh\source\repos\Assignment03\Debug\Assignment03.exe
