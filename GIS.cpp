@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include "HashTable.h"
+#include "QuadTree.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ void readDatabase(string fileName)
 		int j = 0;
 		if (i != 0)
 		{
+			record.push_back(to_string(i));
 			while (getline(check, temp, '|'))
 			{
 				switch (j)
@@ -93,8 +95,8 @@ void readDatabase(string fileName)
 						break;
 				}
 				j++;
-			}
-		}
+			}	
+		}		
 		database.push_back(record);
 		i++;
 	}
@@ -272,18 +274,18 @@ void whatisin(string databaseFile, queue<T>& data)
 
 void hashing()
 {
-	HashFunction<string>* hash = new SimpleStringHash();
+	HashFunction* hash = new SimpleStringHash();
 	QuadraticProbing* q = new QuadraticProbing();
-	Hashtable<string> hashtable = Hashtable<string>(1024, hash, q);
+	Hashtable hashtable = Hashtable(1024, hash, q);
 	for (int i = 0; i < database.size(); i++)
 	{
 		if (database[i].size())
 		{
-			hashtable.insert(database[i][1] + ":" + database[i][3]);
+			hashtable.insert(database[i][2] + ":" + database[i][4], stoi(database[i][0]));
 		}
 
 	}
-	//hashtable.display();
+	hashtable.display();
 }
 
 template <typename T>
@@ -399,7 +401,6 @@ void parser(string scriptFile)
 
 int main()
 {
-	
-	parser("DemoScript02.txt");
+	parser("DemoScript07.txt");
 	return 0;
 }
