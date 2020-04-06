@@ -14,6 +14,7 @@ using namespace std;
 
 int cmdStat = 0;
 vector<vector<string>> database;
+string latX, latY, longX, longY;
 
 void readDatabase(string fileName)
 {
@@ -158,13 +159,13 @@ int DMStoSecond(string dms)
 			seconds = degree * 3600 + minute * 60 + second;
 		}
 	}
-	cout << "Seconds: " << seconds << endl;
 	return seconds;
 }
 
 template <typename T>
 void world(string databaseFile, queue<T>& data)
 {
+	int i = 0;
 	while (!data.empty()) 
 	{
 		if (data.size() == 1)
@@ -175,8 +176,24 @@ void world(string databaseFile, queue<T>& data)
 		{
 			DMStoString(data.front());
 			DMStoSecond(data.front());
+			switch (i)
+			{
+				case 0:
+					longX = data.front();
+					break;
+				case 1:
+					longY = data.front();
+					break;
+				case 2:
+					latX = data.front();
+					break;
+				case 3: 
+					latY = data.front();
+					break;
+			}
 			data.pop();
 		}
+		i++;
 	}
 	cout << endl;
 }
@@ -401,6 +418,22 @@ void parser(string scriptFile)
 
 int main()
 {
-	parser("DemoScript07.txt");
+	parser("DemoScript02.txt");
+	Quad world(Coordinate(-10000000, -10000000), Coordinate(10000000, 10000000));
+	Node temp;
+	for (int i = 0; i < database.size(); i++)
+	{
+		if (database[i].size())
+		{
+			temp.pos = Coordinate(DMStoSecond(database[i][9]), DMStoSecond(database[i][8]));
+			temp.data = stoi(database[i][0]);
+			cout << "Insert (" << temp.pos.x << "," << temp.pos.y << ") and " << temp.data <<endl;
+			world.insert(&temp);
+			
+		}
+	}
+	//cout << DMStoSecond("1074019W") << " and " << DMStoSecond("380145N") << endl;
+	 cout << "Location: " << world.search(Coordinate(DMStoSecond("1074146W"), DMStoSecond("375437N")))->data << "\n";
+	//cout << "Location: " << center.search(Coordinate(-387902, 137347))->data << "\n";
 	return 0;
 }
