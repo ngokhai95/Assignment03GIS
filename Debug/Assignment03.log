@@ -1,9 +1,9 @@
 ﻿  GIS.cpp
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(41,27): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(278,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(94,2): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(82): message : while compiling class template member function 'void Hashtable<std::string>::expandAndRehash(void)'
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(135): message : see reference to function template instantiation 'void Hashtable<std::string>::expandAndRehash(void)' being compiled
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(277): message : see reference to class template instantiation 'Hashtable<std::string>' being compiled
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(99,2): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(43,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(96,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(101,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(200,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(304,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(318,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(331,20): warning C4018: '<': signed/unsigned mismatch
   Assignment03.vcxproj -> C:\Users\ngokh\Documents\GitHub\Assignment03GIS\Debug\Assignment03.exe

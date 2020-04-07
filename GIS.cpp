@@ -8,11 +8,19 @@
 #include <map>
 #include <vector>
 #include "HashTable.h"
+#include "QuadTree.h"
+#include "BufferPool.h"
 
 using namespace std;
 
 int cmdStat = 0;
 vector<vector<string>> database;
+string latX, latY, longX, longY;
+HashFunction* hashfunc = new SimpleStringHash();
+QuadraticProbing* q = new QuadraticProbing();
+Hashtable hashtable = Hashtable(1024, hashfunc, q);
+Quad* quadTree;
+BufferPool buffer(20);
 
 void readDatabase(string fileName)
 {
@@ -27,6 +35,7 @@ void readDatabase(string fileName)
 		int j = 0;
 		if (i != 0)
 		{
+			record.push_back(to_string(i));
 			while (getline(check, temp, '|'))
 			{
 				switch (j)
@@ -93,8 +102,8 @@ void readDatabase(string fileName)
 						break;
 				}
 				j++;
-			}
-		}
+			}	
+		}		
 		database.push_back(record);
 		i++;
 	}
@@ -123,6 +132,10 @@ void DMStoString(string dms)
 
 int DMStoSecond(string dms)
 {
+	if (dms == "Unknown")
+	{
+		return 0;
+	}
 	int seconds = 0;
 	int degree, minute, second;
 	char direction;
@@ -156,13 +169,13 @@ int DMStoSecond(string dms)
 			seconds = degree * 3600 + minute * 60 + second;
 		}
 	}
-	cout << "Seconds: " << seconds << endl;
 	return seconds;
 }
 
 template <typename T>
 void world(string databaseFile, queue<T>& data)
 {
+	int i = 0;
 	while (!data.empty()) 
 	{
 		if (data.size() == 1)
@@ -173,8 +186,24 @@ void world(string databaseFile, queue<T>& data)
 		{
 			DMStoString(data.front());
 			DMStoSecond(data.front());
+			switch (i)
+			{
+				case 0:
+					longX = data.front();
+					break;
+				case 1:
+					longY = data.front();
+					break;
+				case 2:
+					latX = data.front();
+					break;
+				case 3: 
+					latY = data.front();
+					break;
+			}
 			data.pop();
 		}
+		i++;
 	}
 	cout << endl;
 }
@@ -272,18 +301,40 @@ void whatisin(string databaseFile, queue<T>& data)
 
 void hashing()
 {
-	HashFunction<string>* hash = new SimpleStringHash();
-	QuadraticProbing* q = new QuadraticProbing();
-	Hashtable<string> hashtable = Hashtable<string>(1024, hash, q);
 	for (int i = 0; i < database.size(); i++)
 	{
 		if (database[i].size())
 		{
-			hashtable.insert(database[i][1] + ":" + database[i][3]);
+			hashtable.insert(database[i][2] + ":" + database[i][4], stoi(database[i][0]));
 		}
 
 	}
-	//hashtable.display();
+}
+
+void buildQuadTree()
+{
+	quadTree = new Quad(Coordinate(DMStoSecond(longX), DMStoSecond(latX)), Coordinate(DMStoSecond(longY), DMStoSecond(latY)));
+
+	for (int i = 0; i < database.size(); i++)
+	{
+		if (database[i].size())
+		{
+			Node* temp = new Node(Coordinate(DMStoSecond(database[i][9]), DMStoSecond(database[i][8])), stoi(database[i][0]));
+			quadTree->insert(temp);
+
+		}
+	}
+}
+
+void pooling()
+{
+	for (int i = 0; i < database.size(); i++)
+	{
+		if (database[i].size())
+		{
+			buffer.save(stoi(database[i][0]), database[i]);
+		}
+	}
 }
 
 template <typename T>
@@ -307,6 +358,8 @@ void execute(int cmd, queue<T>& data)
 			import("yes", data);
 			cout << "Imported! Hashing..." << endl;
 			hashing();
+			cout << "Hash Finished! Building Quad Tree..." << endl;
+			buildQuadTree();
 			cout << "Finished!" << endl;
 			cmdStat = 0;
 			break;
@@ -399,7 +452,8 @@ void parser(string scriptFile)
 
 int main()
 {
-	
 	parser("DemoScript02.txt");
+	cout << "Printing Quad Tree..." << endl;
+	quadTree->displayTree(quadTree);
 	return 0;
 }
