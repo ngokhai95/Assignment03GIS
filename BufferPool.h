@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-#include <unordered_map>
+#include <map>
 #include <vector>
 using namespace std;
 
@@ -8,7 +8,7 @@ class BufferPool {
 
 	list<int> key;
 
-	unordered_map<int, pair <list<int>::iterator, vector<string>>> pool;
+	map<int, pair <list<int>::iterator, vector<string>>> pool;
 	int bufferSize;
 
 public:
@@ -47,18 +47,13 @@ void BufferPool::save(int offset, vector<string> record)
 
 void BufferPool::display()
 {
-	for (auto it = key.begin(); it != key.end(); it++)
+	for (auto record = pool.rbegin(); record != pool.rend(); record++)
 	{
-		cout << (*it) << " ";
-		/*for (auto record : pool)
+		cout << record->first << ": ";
+		for (int i = 1; i < record->second.second.size(); i++)
 		{
-			cout << record.first << ": ";
-			for (int i = 1; i < record.second.second.size(); i++)
-			{
-				cout << record.second.second[i] << " ";
-			}
-			cout << endl;
-		}*/
+			cout << record->second.second[i] << " ";
+		}
+		cout << endl;
 	}
-	
 }

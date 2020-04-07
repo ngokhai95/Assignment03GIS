@@ -3,6 +3,8 @@
 #include <cmath> 
 using namespace std;
 
+int times = 2;
+
 struct Coordinate
 {
 	int x;
@@ -22,50 +24,50 @@ struct Coordinate
 struct Node
 {
 	Coordinate pos;
-	int data;
+	vector<int> bucketOffset;
 	Node(Coordinate _pos, int _data)
 	{
 		pos = _pos;
-		data = _data;
+		bucketOffset.push_back(_data);
 	}
 	Node()
 	{
-		data = 0;
+		bucketOffset.push_back(0);
 	}
 };
 
 class Quad
 {
-	Coordinate topLeft;
-	Coordinate botRight;
+	Coordinate northWest;
+	Coordinate southEast;
 
-	Node* n;
+	Node* node;
 
-	Quad* topLeftTree;
-	Quad* topRightTree;
-	Quad* botLeftTree;
-	Quad* botRightTree;
+	Quad* northWestArea;
+	Quad* northEastArea;
+	Quad* SouthWestArea;
+	Quad* southEastArea;
 
 public:
 	Quad()
 	{
-		topLeft = Coordinate(0, 0);
-		botRight = Coordinate(0, 0);
-		n = NULL;
-		topLeftTree = NULL;
-		topRightTree = NULL;
-		botLeftTree = NULL;
-		botRightTree = NULL;
+		northWest = Coordinate(0, 0);
+		southEast = Coordinate(0, 0);
+		node = NULL;
+		northWestArea = NULL;
+		northEastArea = NULL;
+		SouthWestArea = NULL;
+		southEastArea = NULL;
 	}
 	Quad(Coordinate topL, Coordinate botR)
 	{
-		n = NULL;
-		topLeftTree = NULL;
-		topRightTree = NULL;
-		botLeftTree = NULL;
-		botRightTree = NULL;
-		topLeft = topL;
-		botRight = botR;
+		node = NULL;
+		northWestArea = NULL;
+		northEastArea = NULL;
+		SouthWestArea = NULL;
+		southEastArea = NULL;
+		northWest = topL;
+		southEast = botR;
 	}
 	void insert(Node*);
 	Node* search(Coordinate);
@@ -74,73 +76,79 @@ public:
 };
 
 // Insert a node into the quadtree 
-void Quad::insert(Node* node)
+void Quad::insert(Node* input)
 {
 	
-	if (node == NULL)
+	if (input == NULL)
 		return;
 
 	//outside boundary
-	if (!inBoundary(node->pos))
+	if (!inBoundary(input->pos))
 		return;
 
 	//cannot be divided further
-	if (abs(topLeft.x - botRight.x) <= 1 &&
-		abs(topLeft.y - botRight.y) <= 1)
+	if (abs(northWest.x - southEast.x) <= 1 &&
+		abs(northWest.y - southEast.y) <= 1)
 	{
-		if (n == NULL)
-			n = node;
+		if (node == NULL) //empty node
+		{
+			node = input;
+		}
+		else //if node exist, search for it then add input offset to the node's offset bucket
+		{
+			this->search(input->pos)->bucketOffset.push_back(input->bucketOffset[0]);
+		}
 		return;
 	}
 
-	if ((topLeft.x + botRight.x) / 2 >= node->pos.x)
+	if ((northWest.x + southEast.x) / 2 >= input->pos.x)
 	{
-		// Indicates topLeftTree 
-		if ((topLeft.y + botRight.y) / 2 >= node->pos.y)
+		// Traverse northWestArea 
+		if ((northWest.y + southEast.y) / 2 >= input->pos.y)
 		{
-			if (topLeftTree == NULL)
-				topLeftTree = new Quad(
-					Coordinate(topLeft.x, topLeft.y),
-					Coordinate((topLeft.x + botRight.x) / 2,
-					(topLeft.y + botRight.y) / 2));
-			topLeftTree->insert(node);
+			if (northWestArea == NULL)
+				northWestArea = new Quad(
+					Coordinate(northWest.x, northWest.y),
+					Coordinate((northWest.x + southEast.x) / 2,
+					(northWest.y + southEast.y) / 2));
+			northWestArea->insert(input);
 		}
 
-		// Indicates botLeftTree 
+		// Traverse southWestArea 
 		else
 		{
-			if (botLeftTree == NULL)
-				botLeftTree = new Quad(
-					Coordinate(topLeft.x,
-					(topLeft.y + botRight.y) / 2),
-					Coordinate((topLeft.x + botRight.x) / 2,
-						botRight.y));
-			botLeftTree->insert(node);
+			if (SouthWestArea == NULL)
+				SouthWestArea = new Quad(
+					Coordinate(northWest.x,
+					(northWest.y + southEast.y) / 2),
+					Coordinate((northWest.x + southEast.x) / 2,
+						southEast.y));
+			SouthWestArea->insert(input);
 		}
 	}
 	else
 	{
-		// Indicates topRightTree 
-		if ((topLeft.y + botRight.y) / 2 >= node->pos.y)
+		// Traverse northEastArea  
+		if ((northWest.y + southEast.y) / 2 >= input->pos.y)
 		{
-			if (topRightTree == NULL)
-				topRightTree = new Quad(
-					Coordinate((topLeft.x + botRight.x) / 2,
-						topLeft.y),
-					Coordinate(botRight.x,
-					(topLeft.y + botRight.y) / 2));
-			topRightTree->insert(node);
+			if (northEastArea == NULL)
+				northEastArea = new Quad(
+					Coordinate((northWest.x + southEast.x) / 2,
+						northWest.y),
+					Coordinate(southEast.x,
+					(northWest.y + southEast.y) / 2));
+			northEastArea->insert(input);
 		}
 
-		// Indicates botRightTree 
+		// Traverse southEastArea 
 		else
 		{
-			if (botRightTree == NULL)
-				botRightTree = new Quad(
-					Coordinate((topLeft.x + botRight.x) / 2,
-					(topLeft.y + botRight.y) / 2),
-					Coordinate(botRight.x, botRight.y));
-			botRightTree->insert(node);
+			if (southEastArea == NULL)
+				southEastArea = new Quad(
+					Coordinate((northWest.x + southEast.x) / 2,
+					(northWest.y + southEast.y) / 2),
+					Coordinate(southEast.x, southEast.y));
+			southEastArea->insert(input);
 		}
 	}
 }
@@ -153,46 +161,46 @@ Node* Quad::search(Coordinate p)
 		return NULL;
 
 	//cannot be divided further
-	if (n != NULL)
+	if (node != NULL)
 	{
-		return n;
+		return node;
 	}
 
-	if ((topLeft.x + botRight.x) / 2 >= p.x)
+	if ((northWest.x + southEast.x) / 2 >= p.x)
 	{
 		
-		// Indicates topLeftTree 
-		if ((topLeft.y + botRight.y) / 2 >= p.y)
+		// Traverse northWestArea 
+		if ((northWest.y + southEast.y) / 2 >= p.y)
 		{
-			if (topLeftTree == NULL)
+			if (northWestArea == NULL)
 				return NULL;
-			return topLeftTree->search(p);
+			return northWestArea->search(p);
 		}
 
-		// Indicates botLeftTree 
+		// Traverse southWestArea 
 		else
 		{
-			if (botLeftTree == NULL)
+			if (SouthWestArea == NULL)
 				return NULL;
-			return botLeftTree->search(p);
+			return SouthWestArea->search(p);
 		}
 	}
 	else
 	{
-		// Indicates topRightTree 
-		if ((topLeft.y + botRight.y) / 2 >= p.y)
+		// Traverse northEastArea  
+		if ((northWest.y + southEast.y) / 2 >= p.y)
 		{
-			if (topRightTree == NULL)
+			if (northEastArea == NULL)
 				return NULL;
-			return topRightTree->search(p);
+			return northEastArea->search(p);
 		}
 
-		// Indicates botRightTree 
+		// Traverse southEastArea 
 		else
 		{
-			if (botRightTree == NULL)
+			if (southEastArea == NULL)
 				return NULL;
-			return botRightTree->search(p);
+			return southEastArea->search(p);
 		}
 	}
 };
@@ -200,32 +208,56 @@ Node* Quad::search(Coordinate p)
 // Check if point is in boundary
 bool Quad::inBoundary(Coordinate p)
 {
-	return (p.x >= topLeft.x &&
-		p.x <= botRight.x &&
-		p.y >= topLeft.y &&
-		p.y <= botRight.y);
+	return (p.x >= northWest.x &&
+		p.x <= southEast.x &&
+		p.y >= northWest.y &&
+		p.y <= southEast.y);
 }
 
 void Quad::displayTree(Quad* tree)
 {
-	if (tree->n != NULL)
+
+	if (times > 1)
 	{
-		cout << "[(" << tree->n->pos.x << "," << tree->n->pos.y << "), " << tree->n->data << "]" << endl;
+		cout << endl << "@" << endl;
+		times = 0;
 	}
-	if (tree->topLeftTree != NULL)
+	if (tree->node != NULL)
 	{
-		displayTree(tree->topLeftTree);
+		cout << "[(" << tree->node->pos.x << "," << tree->node->pos.y << ")";
+		for (auto offset : tree->node->bucketOffset)
+		{
+			cout << ", ";
+			cout << offset;
+		}
+		cout << "]";
 	}
-	if (tree->topRightTree != NULL)
+	
+	
+	if (tree->northWestArea != NULL)
 	{
-		displayTree(tree->topRightTree);
+		displayTree(tree->northWestArea);
 	}
-	if (tree->botLeftTree != NULL)
+	if (tree->northEastArea != NULL)
 	{
-		displayTree(tree->botLeftTree);
+		displayTree(tree->northEastArea);
+		if (tree->northWestArea == NULL && tree->SouthWestArea == NULL && tree->southEastArea == NULL)
+		{
+			times++;
+			cout << endl;
+			if (times > 1)
+			{
+				cout << "*";
+			}
+		}
 	}
-	if (tree->botRightTree != NULL)
+	if (tree->SouthWestArea != NULL)
 	{
-		displayTree(tree->botRightTree);
+		displayTree(tree->SouthWestArea);
+	}
+	if (tree->southEastArea != NULL)
+	{
+		displayTree(tree->southEastArea);
+		
 	}
 }

@@ -20,7 +20,7 @@ HashFunction* hashfunc = new SimpleStringHash();
 QuadraticProbing* q = new QuadraticProbing();
 Hashtable hashtable = Hashtable(1024, hashfunc, q);
 Quad* quadTree;
-BufferPool buffer(20);
+BufferPool buffer(5);
 
 void readDatabase(string fileName)
 {
@@ -360,6 +360,8 @@ void execute(int cmd, queue<T>& data)
 			hashing();
 			cout << "Hash Finished! Building Quad Tree..." << endl;
 			buildQuadTree();
+			cout << "Quad Tree Finished! Pooling..." << endl;
+			pooling();
 			cout << "Finished!" << endl;
 			cmdStat = 0;
 			break;
@@ -452,8 +454,7 @@ void parser(string scriptFile)
 
 int main()
 {
-	parser("DemoScript02.txt");
-	cout << "Printing Quad Tree..." << endl;
-	quadTree->displayTree(quadTree);
+	parser("DemoScript01.txt");
+	buffer.display();
 	return 0;
 }
