@@ -126,6 +126,7 @@
     <ClCompile Include="GIS.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BufferPool.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="QuadTree.h" />
   </ItemGroup>

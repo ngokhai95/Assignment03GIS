@@ -3,6 +3,7 @@ C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(43,27): warning C401
 C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(96,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(101,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(200,27): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(297,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(424,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(304,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(318,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(331,20): warning C4018: '<': signed/unsigned mismatch
   Assignment03.vcxproj -> C:\Users\ngokh\Documents\GitHub\Assignment03GIS\Debug\Assignment03.exe

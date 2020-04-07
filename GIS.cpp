@@ -9,12 +9,18 @@
 #include <vector>
 #include "HashTable.h"
 #include "QuadTree.h"
+#include "BufferPool.h"
 
 using namespace std;
 
 int cmdStat = 0;
 vector<vector<string>> database;
 string latX, latY, longX, longY;
+HashFunction* hashfunc = new SimpleStringHash();
+QuadraticProbing* q = new QuadraticProbing();
+Hashtable hashtable = Hashtable(1024, hashfunc, q);
+Quad* quadTree;
+BufferPool buffer(20);
 
 void readDatabase(string fileName)
 {
@@ -126,6 +132,10 @@ void DMStoString(string dms)
 
 int DMStoSecond(string dms)
 {
+	if (dms == "Unknown")
+	{
+		return 0;
+	}
 	int seconds = 0;
 	int degree, minute, second;
 	char direction;
@@ -291,9 +301,6 @@ void whatisin(string databaseFile, queue<T>& data)
 
 void hashing()
 {
-	HashFunction* hash = new SimpleStringHash();
-	QuadraticProbing* q = new QuadraticProbing();
-	Hashtable hashtable = Hashtable(1024, hash, q);
 	for (int i = 0; i < database.size(); i++)
 	{
 		if (database[i].size())
@@ -302,7 +309,32 @@ void hashing()
 		}
 
 	}
-	hashtable.display();
+}
+
+void buildQuadTree()
+{
+	quadTree = new Quad(Coordinate(DMStoSecond(longX), DMStoSecond(latX)), Coordinate(DMStoSecond(longY), DMStoSecond(latY)));
+
+	for (int i = 0; i < database.size(); i++)
+	{
+		if (database[i].size())
+		{
+			Node* temp = new Node(Coordinate(DMStoSecond(database[i][9]), DMStoSecond(database[i][8])), stoi(database[i][0]));
+			quadTree->insert(temp);
+
+		}
+	}
+}
+
+void pooling()
+{
+	for (int i = 0; i < database.size(); i++)
+	{
+		if (database[i].size())
+		{
+			buffer.save(stoi(database[i][0]), database[i]);
+		}
+	}
 }
 
 template <typename T>
@@ -326,6 +358,8 @@ void execute(int cmd, queue<T>& data)
 			import("yes", data);
 			cout << "Imported! Hashing..." << endl;
 			hashing();
+			cout << "Hash Finished! Building Quad Tree..." << endl;
+			buildQuadTree();
 			cout << "Finished!" << endl;
 			cmdStat = 0;
 			break;
@@ -419,21 +453,7 @@ void parser(string scriptFile)
 int main()
 {
 	parser("DemoScript02.txt");
-	Quad world(Coordinate(-10000000, -10000000), Coordinate(10000000, 10000000));
-	Node temp;
-	for (int i = 0; i < database.size(); i++)
-	{
-		if (database[i].size())
-		{
-			temp.pos = Coordinate(DMStoSecond(database[i][9]), DMStoSecond(database[i][8]));
-			temp.data = stoi(database[i][0]);
-			cout << "Insert (" << temp.pos.x << "," << temp.pos.y << ") and " << temp.data <<endl;
-			world.insert(&temp);
-			
-		}
-	}
-	//cout << DMStoSecond("1074019W") << " and " << DMStoSecond("380145N") << endl;
-	 cout << "Location: " << world.search(Coordinate(DMStoSecond("1074146W"), DMStoSecond("375437N")))->data << "\n";
-	//cout << "Location: " << center.search(Coordinate(-387902, 137347))->data << "\n";
+	cout << "Printing Quad Tree..." << endl;
+	quadTree->displayTree(quadTree);
 	return 0;
 }

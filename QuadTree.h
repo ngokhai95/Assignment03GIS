@@ -3,7 +3,6 @@
 #include <cmath> 
 using namespace std;
 
-// Used to hold details of a point 
 struct Coordinate
 {
 	int x;
@@ -20,7 +19,6 @@ struct Coordinate
 	}
 };
 
-// The objects that we want stored in the quadtree 
 struct Node
 {
 	Coordinate pos;
@@ -36,17 +34,13 @@ struct Node
 	}
 };
 
-// The main quadtree class 
 class Quad
 {
-	// Hold details of the boundary of this node 
 	Coordinate topLeft;
 	Coordinate botRight;
 
-	// Contains details of node 
 	Node* n;
 
-	// Children of this tree 
 	Quad* topLeftTree;
 	Quad* topRightTree;
 	Quad* botLeftTree;
@@ -76,7 +70,7 @@ public:
 	void insert(Node*);
 	Node* search(Coordinate);
 	bool inBoundary(Coordinate);
-	void displayTree();
+	void displayTree(Quad* tree);
 };
 
 // Insert a node into the quadtree 
@@ -86,19 +80,16 @@ void Quad::insert(Node* node)
 	if (node == NULL)
 		return;
 
-	// Current quad cannot contain it 
+	//outside boundary
 	if (!inBoundary(node->pos))
 		return;
 
-	// We are at a quad of unit area 
-	// We cannot subdivide this quad further 
+	//cannot be divided further
 	if (abs(topLeft.x - botRight.x) <= 1 &&
 		abs(topLeft.y - botRight.y) <= 1)
 	{
 		if (n == NULL)
 			n = node;
-		cout << "n: (" << n->pos.x << "," << n->pos.y << ") and " << n->data << endl;
-		cout << "Insert: (" << node->pos.x << "," << node->pos.y << ") and " << node->data << endl;
 		return;
 	}
 
@@ -157,16 +148,13 @@ void Quad::insert(Node* node)
 // Find a node in a quadtree 
 Node* Quad::search(Coordinate p)
 {
-	
-	// Current quad cannot contain it 
+	// Outside boundary
 	if (!inBoundary(p))
 		return NULL;
 
-	// We are at a quad of unit length 
-	// We cannot subdivide this quad further 
+	//cannot be divided further
 	if (n != NULL)
 	{
-		cout << "Found: (" << n->pos.x << "," << n->pos.y << ")" << endl;
 		return n;
 	}
 
@@ -209,7 +197,7 @@ Node* Quad::search(Coordinate p)
 	}
 };
 
-// Check if current quadtree contains the point 
+// Check if point is in boundary
 bool Quad::inBoundary(Coordinate p)
 {
 	return (p.x >= topLeft.x &&
@@ -218,7 +206,26 @@ bool Quad::inBoundary(Coordinate p)
 		p.y <= botRight.y);
 }
 
-void Quad::displayTree()
+void Quad::displayTree(Quad* tree)
 {
-
+	if (tree->n != NULL)
+	{
+		cout << "[(" << tree->n->pos.x << "," << tree->n->pos.y << "), " << tree->n->data << "]" << endl;
+	}
+	if (tree->topLeftTree != NULL)
+	{
+		displayTree(tree->topLeftTree);
+	}
+	if (tree->topRightTree != NULL)
+	{
+		displayTree(tree->topRightTree);
+	}
+	if (tree->botLeftTree != NULL)
+	{
+		displayTree(tree->botLeftTree);
+	}
+	if (tree->botRightTree != NULL)
+	{
+		displayTree(tree->botRightTree);
+	}
 }
