@@ -1,0 +1,85 @@
+Execute CMD World: 
+World boundaries are set to: 
+	138600
+-286890		-285990
+	137700
+
+Execute CMD Import: Importing VA_Monterey.txt
+
+Execute CMD Debug: Quad Tree: 
+
+@
+[(-286449,138309), 6]
+
+*
+@
+[(-286345,138312), 18]
+[(-286392,138367), 1][(-286393,138370), 24]
+*
+@
+[(-286353,138352), 19]
+[(-286213,138302), 2][(-286329,138414), 20]
+*
+*
+@
+[(-286324,138413), 23][(-286301,138424), 22]
+[(-286321,138438), 25][(-286319,138445), 15][(-286269,138486), 16]
+*
+@
+[(-286428,138574), 13]
+[(-286403,138593), 7][(-286390,138593), 10]
+*
+*
+@
+[(-286383,138597), 4]
+[(-286379,138600), 3][(-286358,138591), 14]
+*
+*
+@
+[(-286342,138593), 5]
+
+*
+@
+[(-286316,138492), 17]
+
+*
+@
+[(-286299,138530), 11]
+
+*
+*
+@
+[(-286231,138536), 9, 21]
+[(-286313,138576), 8]
+*
+*
+@
+[(-286263,138580), 12]
+Execute CMD Debug: Hash Table: 
+13: White Run VA, [24]
+77: Thorny Bottom Church VA, [22]
+95: Blue Grass VA, [3]
+113: Laurel Run VA, [15]
+120: Wooden Run VA, [25]
+190: New Hampden VA, [13]
+192: Barren Rock VA, [2]
+237: Burners Run VA, [6]
+242: Simmons Run VA, [20]
+263: Possum Trot VA, [17]
+312: Strait Creek VA, [21]
+426: Asbury Church VA, [1]
+432: Gulf Mountain VA, [12]
+433: Seybert Hills VA, [19]
+509: Central Church VA, [7]
+514: Seybert Chapel VA, [18]
+583: Forks of Waters VA, [9]
+748: Bluegrass Valley VA, [5]
+749: Ginseng Mountain VA, [11]
+763: West Strait Creek VA, [23]
+808: Elk Run VA, [8]
+821: Key Run VA, [14]
+906: Blue Grass School (historical) VA, [4]
+911: Peck Run VA, [16]
+1022: Frank Run VA, [10]
+
+Execute CMD: Quit!

@@ -1,0 +1,48 @@
+Execute CMD World: 
+World boundaries are set to: 
+	147600
+-392400		-378000
+	133200
+
+Execute CMD Import: Importing CO_Ouray.txt
+
+Execute CMD What_is: Not There Summit CO
+
+The following 0 feature was found: 
+
+
+Execute CMD What_is: Sniffles Creek CO
+
+The following 0 feature was found: 
+
+
+Execute CMD What_is_at: (107d00m00s West,39d00m00s North)
+
+The following 0 feature was found: 
+
+
+Execute CMD What_is_at: (109d00m00s West,37d00m00s North)
+
+The following 0 feature was found: 
+
+
+Execute CMD What_is_in: (107d00m00s West +/- 15, 39d00m00s North +/- 15)
+
+The following 0 feature was found: 
+
+
+Execute CMD What_is_in: (108d59m00s West +/- 120, 40d59m00s North +/- 30)
+
+The following 0 feature was found: 
+
+
+Execute CMD What_is_in: (108d59m00s West +/- 120, 40d59m00s North +/- 30)
+
+The following 0 feature was found: 
+
+
+Execute CMD What_is_in: (108d59m00s West +/- 120, 40d59m00s North +/- 30) with filter: water
+
+These following feature was found: 
+
+Execute CMD: Quit!

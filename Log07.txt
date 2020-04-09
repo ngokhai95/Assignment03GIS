@@ -1,0 +1,102 @@
+Execute CMD World: 
+World boundaries are set to: 
+	138600
+-396000		-367200
+	109800
+
+Execute CMD Import: Importing NM_All.txt
+
+Execute CMD What_is: Nester Draw NM
+
+The following 4 feature was found: 
+
+19657: Otero (105d38m56s West, 32d39m29s North)
+2216: Chato Flat (, )
+23580: Catron (108d02m42s West, 33d58m21s North)
+54998: Catron (108d02m14s West, 34d08m34s North)
+
+Execute CMD What_is: Screaming Left Hand Turn NM
+
+The following 1 feature was found: 
+
+39421: Taos (106d40m25s West, 36d21m03s North)
+
+Execute CMD What_is: Window Rock NM
+
+The following 4 feature was found: 
+
+22361: Taos (105d26m43s West, 36d33m01s North)
+2913: 888162 (, )
+2060: Chaves (104d53m08s West, 32d47m04s North)
+2060: Chaves (104d53m08s West, 32d47m04s North)
+
+Execute CMD What_is: Buena Vista NM
+
+The following 4 feature was found: 
+
+28262: Rio Arriba (106d22m38s West, 36d29m00s North)
+5519: Sandoval (107d16m10s West, 35d19m17s North)
+302: Otero (105d21m22s West, 32d00m57s North)
+14202: Mora (105d14m57s West, 35d54m49s North)
+
+Execute CMD What_is_at: (105d40m49s West,36d39m57s North)
+
+The following 1 feature was found: 
+
+22516: Little Arsenic Springs Campground Taos NM
+
+Execute CMD What_is_at: (103d43m28s West,35d10m18s North)
+
+The following 1 feature was found: 
+
+51325: Douglas Post Office (historical) Quay NM
+
+Execute CMD What_is_at: (108d52m22s West,36d28m46s North)
+
+The following 1 feature was found: 
+
+12195: Tse-clani-to Wash San Juan NM
+
+Execute CMD What_is_at: (105d56m04s West,33d42m36s North)
+
+The following 1 feature was found: 
+
+43825: The Malpais Lincoln NM
+
+Execute CMD What_is_in: (108d52m20s West +/- 120, 36d28m46s North +/- 120)
+
+The following 6 feature was found: 
+
+41470: 12T-570 Water Well NM  (108d54m06s West, 36d27m49s North)
+41464: T26R19s5 Water Well NM  (108d53m00s West, 36d30m43s North)
+12195: Tse-clani-to Wash NM  (108d52m22s West, 36d28m46s North)
+35278: 12M-39 Spring NM  (108d51m47s West, 36d28m51s North)
+55918: Sanostee Chapter NM  (108d50m43s West, 36d26m52s North)
+41255: 12T-338 Water Well NM  (108d50m23s West, 36d29m00s North)
+
+Execute CMD What_is_in: (106d27m31s West +/- 120, 33d38m59s North +/- 120)
+
+The following 5 feature was found: 
+
+17356: Trinity Site NM  (106d28m31s West, 33d40m38s North)
+46553: Trinity Site Historical Marker NM  (106d28m31s West, 33d40m38s North)
+6482: McDonald Ranch NM  (106d27m33s West, 33d38m59s North)
+34471: Millars Watch Site NM  (106d26m11s West, 33d40m00s North)
+9661: Smith Tank NM  (106d25m45s West, 33d37m11s North)
+
+Execute CMD What_is_in: (107d34m57s West +/- 60, 34d53m26s North +/- 60)
+
+The following 10 feature was found: 
+
+13315: Dinosaur Rock NM  (107d35m20s West, 34d53m53s North)
+323: Acoma Village NM  (107d35m13s West, 34d53m55s North)
+43579: Acoma Community Library Resource Center NM  (107d35m13s West, 34d53m55s North)
+13282: Acoma Rock NM  (107d34m59s West, 34d53m26s North)
+39442: Sky City Community NM  (107d34m54s West, 34d53m47s North)
+42971: Acoma Pueblo NM  (107d34m54s West, 34d53m47s North)
+43758: Acoma Museum NM  (107d34m54s West, 34d53m47s North)
+45950: Pueblo of Acoma Historical Marker NM  (107d34m54s West, 34d53m47s North)
+46538: Cebolleta Historical Marker NM  (107d34m54s West, 34d53m47s North)
+49075: San Estevan de Acoma Mission Church Historic Site NM  (107d34m52s West, 34d53m47s North)
+
+Execute CMD: Quit!

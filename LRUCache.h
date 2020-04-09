@@ -14,7 +14,7 @@ class LRUCache {
 public:
 	LRUCache(int);
 	void save(int, vector<string>);
-	void display();
+	void display(string);
 };
 
 LRUCache::LRUCache(int n)
@@ -35,7 +35,6 @@ void LRUCache::save(int offset, vector<string> record)
 			pool.erase(last);
 		}
 	}
-
 	else
 	{
 		key.erase(pool[offset].first);
@@ -45,15 +44,18 @@ void LRUCache::save(int offset, vector<string> record)
 	pool[offset].second = record;
 }
 
-void LRUCache::display()
+void LRUCache::display(string logFile)
 {
+	ofstream outputLog;
+	outputLog.open(logFile, fstream::app);
 	for (auto record = pool.rbegin(); record != pool.rend(); record++)
 	{
-		cout << record->first << ": ";
+		outputLog << record->first << "|";
 		for (int i = 1; i < record->second.second.size(); i++)
 		{
-			cout << record->second.second[i] << " ";
+			outputLog << record->second.second[i] << "|";
 		}
-		cout << endl;
+		outputLog << endl;
 	}
+	outputLog.close();
 }

@@ -72,7 +72,7 @@ public:
 	void insert(Node*);
 	Node* search(Coordinate);
 	bool inBoundary(Coordinate);
-	void displayTree(Quad* tree);
+	void displayTree(Quad*, string);
 };
 
 // Insert a node into the quadtree 
@@ -214,50 +214,52 @@ bool Quad::inBoundary(Coordinate p)
 		p.y <= southEast.y);
 }
 
-void Quad::displayTree(Quad* tree)
+void Quad::displayTree(Quad* tree, string logFile)
 {
-
+	ofstream outputLog;
+	outputLog.open(logFile, fstream::app);
 	if (times > 1)
 	{
-		cout << endl << "@" << endl;
+		outputLog << endl << "@" << endl;
 		times = 0;
 	}
 	if (tree->node != NULL)
 	{
-		cout << "[(" << tree->node->pos.x << "," << tree->node->pos.y << ")";
+		outputLog << "[(" << tree->node->pos.x << "," << tree->node->pos.y << ")";
 		for (auto offset : tree->node->bucketOffset)
 		{
-			cout << ", ";
-			cout << offset;
+			outputLog << ", ";
+			outputLog << offset;
 		}
-		cout << "]";
+		outputLog << "]";
 	}
 	
 	
 	if (tree->northWestArea != NULL)
 	{
-		displayTree(tree->northWestArea);
+		displayTree(tree->northWestArea, logFile);
 	}
 	if (tree->northEastArea != NULL)
 	{
-		displayTree(tree->northEastArea);
+		displayTree(tree->northEastArea, logFile);
 		if (tree->northWestArea == NULL && tree->SouthWestArea == NULL && tree->southEastArea == NULL)
 		{
 			times++;
-			cout << endl;
+			outputLog << endl;
 			if (times > 1)
 			{
-				cout << "*";
+				outputLog << "*";
 			}
 		}
 	}
 	if (tree->SouthWestArea != NULL)
 	{
-		displayTree(tree->SouthWestArea);
+		displayTree(tree->SouthWestArea, logFile);
 	}
 	if (tree->southEastArea != NULL)
 	{
-		displayTree(tree->southEastArea);
+		displayTree(tree->southEastArea, logFile);
 		
 	}
+	outputLog.close();
 }

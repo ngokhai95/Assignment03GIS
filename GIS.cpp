@@ -14,14 +14,19 @@
 using namespace std;
 
 int cmdStat = 0;
+bool checkSp = false;
 vector<vector<string>> dataPlaceholder;
 vector<string> record;
 string latX, latY, longX, longY;
+string water[18] = {"Arroyo", "Basin", "Bay", "Bend", "Canal", "Channel", "Falls", "Glacier", "Gut", "Harbor", "Lake", "Rapids", "Reservoir", "Sea", "Spring", "Stream", "Swamp", "Well"};
+string structure[12] = {"Airport", "Bridge", "Building", "Church", "Dam",  "Hospital", "Levee", "Park", "Post Office", "School", "Tower", "Tunnel"};
+string pop[1] = {"Populated Place"};
 HashFunction* hashfunc = new SimpleStringHash();
 QuadraticProbing* q = new QuadraticProbing();
 Hashtable hashtable = Hashtable(1024, hashfunc, q);
 Quad* quadTree;
-LRUCache buffer(5);
+LRUCache pool(15);
+ofstream outputLog;
 
 string DMStoString(string dms)
 {
@@ -42,7 +47,23 @@ string DMStoString(string dms)
 		second = dms.substr(5, 2);
 		direction = dms[7];
 	}
-	result = degree + "D " + minute + "M " + second + "S " + "at " + direction;
+	if (direction == 'W')
+	{
+		result = degree + "d" + minute + "m" + second + "s" + " West";
+	}
+	else if (direction == 'S')
+	{
+		result = degree + "d" + minute + "m" + second + "s" + " South";
+	}
+	else if (direction == 'N')
+	{
+		result = degree + "d" + minute + "m" + second + "s" + " North";
+	}
+	else if (direction == 'E')
+	{
+		result = degree + "d" + minute + "m" + second + "s" + " East";
+	}
+	
 	return result;
 }
 
@@ -115,7 +136,8 @@ void buildQuadTree()
 
 void caching(vector<string> record)
 {
-	buffer.save(stoi(record[0]), record);
+	if(!checkSp)
+		pool.save(stoi(record[0]), record);
 }
 
 void writeDatabase(string fileName)
@@ -153,57 +175,68 @@ vector<string> findOffset(int offset, string dataFile)
 						
 				}
 			}
+		
 		}
 		i++;
+		if (record.size() > 15)
+		{
+			break;
+		}
 	}
 	caching(record);
 	return record;
 }
 
-void dataSearch(int type, string lt, string ln, string ltOffset, string lnOffset, string dataFile)
+void dataSearch(int type, string lt, string ln, string ltOffset, string lnOffset, string filter, string dataFile)
 {
-
+	
 	vector<int> offsetList;
 	switch (type)
 	{
 	case 0: //what_is
-		offsetList = hashtable.search(lt);
+		if (hashtable.search(lt).size())
+		{
+			offsetList = hashtable.search(lt);
+		}
 		for (auto offset : offsetList)
 		{
 			record.clear();
 			dataPlaceholder.push_back(findOffset(offset, dataFile));
 		}
-		cout << endl;
-		cout << "The following " << offsetList.size() << " feature was found: " << endl;
-		cout << endl;
+		outputLog << endl;
+		outputLog << "The following " << offsetList.size() << " feature was found: " << endl;
+		outputLog << endl;
 		for (int i = 0; i < offsetList.size(); i++)
 		{
 			if (dataPlaceholder[i].size())
 			{
-				cout << offsetList[i] << ": " << dataPlaceholder[i][5] << " (" << DMStoString(dataPlaceholder[i][8]) << ", " << DMStoString(dataPlaceholder[i][7]) << ")" << endl;
+				outputLog << offsetList[i] << ": " << dataPlaceholder[i][5] << " (" << DMStoString(dataPlaceholder[i][8]) << ", " << DMStoString(dataPlaceholder[i][7]) << ")" << endl;
 			}
 		}
-		cout << endl;
+		outputLog << endl;
 		dataPlaceholder.clear();
 		break;
 	case 1: //what_is_at
-		offsetList = quadTree->search(Coordinate(DMStoSecond(ln), DMStoSecond(lt)))->bucketOffset;
+		if (quadTree->search(Coordinate(DMStoSecond(ln), DMStoSecond(lt))))
+		{
+			offsetList = quadTree->search(Coordinate(DMStoSecond(ln), DMStoSecond(lt)))->bucketOffset;
+		}
 		for (auto offset : offsetList)
 		{
 			record.clear();
 			dataPlaceholder.push_back(findOffset(offset, dataFile));
 		}
-		cout << endl;
-		cout << "The following " << offsetList.size() << " feature was found: " << endl;
-		cout << endl;
+		outputLog << endl;
+		outputLog << "The following " << offsetList.size() << " feature was found: " << endl;
+		outputLog << endl;
 		for (int i = 0; i < offsetList.size(); i++)
 		{
 			if (dataPlaceholder[i].size())
 			{
-				cout << offsetList[i] << ": " << dataPlaceholder[i][1] << " " << dataPlaceholder[i][5] << " " << dataPlaceholder[i][3] << endl;
+				outputLog << offsetList[i] << ": " << dataPlaceholder[i][1] << " " << dataPlaceholder[i][5] << " " << dataPlaceholder[i][3] << endl;
 			}
 		}
-		cout << endl;
+		outputLog << endl;
 		dataPlaceholder.clear();
 		break;
 	case 2: //what_is_in
@@ -225,16 +258,17 @@ void dataSearch(int type, string lt, string ln, string ltOffset, string lnOffset
 			record.clear();
 			dataPlaceholder.push_back(findOffset(offset, dataFile));
 		}
-		cout << endl;
-		cout << "The following " << offsetList.size() << " feature was found: " << endl;
-		cout << endl;
+		outputLog << endl;
+		outputLog << "The following " << offsetList.size() << " feature was found: " << endl;
+		outputLog << endl;
 		for (int i = 0; i < offsetList.size(); i++)
 		{
 			if (dataPlaceholder[i].size())
 			{
-				cout << offsetList[i] << ": " << dataPlaceholder[i][1] << " " << dataPlaceholder[i][3] << " " << " (" << DMStoString(dataPlaceholder[i][8]) << ", " << DMStoString(dataPlaceholder[i][7]) << ")" << endl;
+				outputLog << offsetList[i] << ": " << dataPlaceholder[i][1] << " " << dataPlaceholder[i][3] << " " << " (" << DMStoString(dataPlaceholder[i][8]) << ", " << DMStoString(dataPlaceholder[i][7]) << ")" << endl;
 			}
 		}
+		dataPlaceholder.clear();
 		break;
 	case 3: //what_is_in -long
 		for (int i = -stoi(lnOffset); i <= stoi(lnOffset); i++)
@@ -255,28 +289,99 @@ void dataSearch(int type, string lt, string ln, string ltOffset, string lnOffset
 			record.clear();
 			dataPlaceholder.push_back(findOffset(offset, dataFile));
 		}
-		cout << endl;
-		cout << "The following " << offsetList.size() << " feature was found: " << endl;
-		cout << endl;
+		outputLog << endl;
+		outputLog << "The following " << offsetList.size() << " feature was found: " << endl;
+		outputLog << endl;
 		for (int i = 0; i < offsetList.size(); i++)
 		{
 			if (dataPlaceholder[i].size())
 			{
-				cout << "Feature ID: " << dataPlaceholder[i][0] << endl;
-				cout << "Feature Name: " << dataPlaceholder[i][1] << endl;
-				cout << "Feature Class: " << dataPlaceholder[i][2] << endl;
-				cout << "State: " << dataPlaceholder[i][3] << endl;
-				cout << "County: " << dataPlaceholder[i][5] << endl;
-				cout << "Longitude: " << DMStoString(dataPlaceholder[i][8]) << endl;
-				cout << "Latitude: " << DMStoString(dataPlaceholder[i][7]) << endl;
-				cout << "Elev in Feet: " << dataPlaceholder[i][16] << endl;
-				cout << "USGS Quad: " << dataPlaceholder[i][17] << endl;
-				cout << "Date Created: " << dataPlaceholder[i][18] << endl;
+				outputLog << "Feature ID: " << dataPlaceholder[i][0] << endl;
+				outputLog << "Feature Name: " << dataPlaceholder[i][1] << endl;
+				outputLog << "Feature Class: " << dataPlaceholder[i][2] << endl;
+				outputLog << "State: " << dataPlaceholder[i][3] << endl;
+				outputLog << "County: " << dataPlaceholder[i][5] << endl;
+				outputLog << "Longitude: " << DMStoString(dataPlaceholder[i][8]) << endl;
+				outputLog << "Latitude: " << DMStoString(dataPlaceholder[i][7]) << endl;
+				outputLog << "Elev in Feet: " << dataPlaceholder[i][16] << endl;
+				outputLog << "USGS Quad: " << dataPlaceholder[i][17] << endl;
+				outputLog << "Date Created: " << dataPlaceholder[i][18] << endl << endl;
 			}
-			cout << endl << endl;
 		}
+		dataPlaceholder.clear();
 		break;
 	case 4: //what_is_in -filter
+		for (int i = -stoi(lnOffset); i <= stoi(lnOffset); i++)
+		{
+			for (int j = -stoi(ltOffset); j <= stoi(ltOffset); j++)
+			{
+				if (quadTree->search(Coordinate(DMStoSecond(ln) + i, DMStoSecond(lt) + j)))
+				{
+					for (auto offset : quadTree->search(Coordinate(DMStoSecond(ln) + i, DMStoSecond(lt) + j))->bucketOffset)
+					{
+						offsetList.push_back(offset);
+					}
+				}
+			}
+		}
+		for (auto offset : offsetList)
+		{
+			record.clear();
+			dataPlaceholder.push_back(findOffset(offset, dataFile));
+		}
+		outputLog << endl << "These following feature was found: " << endl;
+		if (filter == "water")
+		{
+			for (int i = 0; i < offsetList.size(); i++)
+			{
+				for (auto ftClass : water)
+				{
+					if (dataPlaceholder[i].size())
+					{
+						if (dataPlaceholder[i][2] == ftClass)
+						{
+							outputLog << offsetList[i] << ": " << dataPlaceholder[i][1] << " " << dataPlaceholder[i][3] << " " << " (" << DMStoString(dataPlaceholder[i][8]) << ", " << DMStoString(dataPlaceholder[i][7]) << ")" << endl;
+						}
+						
+					}
+				}
+			}
+		}
+		else if (filter == "structure")
+		{
+			for (int i = 0; i < offsetList.size(); i++)
+			{
+				for (auto ftClass : structure)
+				{
+					if (dataPlaceholder[i].size())
+					{
+						if (dataPlaceholder[i][2] == ftClass)
+						{
+							outputLog << offsetList[i] << ": " << dataPlaceholder[i][1] << " " << dataPlaceholder[i][3] << " " << " (" << DMStoString(dataPlaceholder[i][8]) << ", " << DMStoString(dataPlaceholder[i][7]) << ")" << endl;
+						}
+						
+					}
+				}
+			}
+		}
+		else if (filter == "pop")
+		{
+			for (int i = 0; i < offsetList.size(); i++)
+			{
+				for (auto ftClass : pop)
+				{
+					if (dataPlaceholder[i].size())
+					{
+						if (dataPlaceholder[i][2] == ftClass)
+						{
+							outputLog << offsetList[i] << ": " << dataPlaceholder[i][1] << " " << dataPlaceholder[i][3] << " " << " (" << DMStoString(dataPlaceholder[i][8]) << ", " << DMStoString(dataPlaceholder[i][7]) << ")" << endl;
+						}
+						
+					}
+				}
+			}
+		}
+		dataPlaceholder.clear();
 		break;
 	}
 }
@@ -369,8 +474,9 @@ void readDatabase(string fileName)
 }
 
 template <typename T>
-void world(string databaseFile, queue<T>& data)
+void worldCmd(string databaseFile, queue<T>& data)
 {
+	cout << "Getting World coordinate..." << endl;
 	int i = 0;
 	while (!data.empty()) 
 	{
@@ -380,8 +486,6 @@ void world(string databaseFile, queue<T>& data)
 		}
 		else
 		{
-			DMStoString(data.front());
-			DMStoSecond(data.front());
 			switch (i)
 			{
 				case 0:
@@ -401,12 +505,16 @@ void world(string databaseFile, queue<T>& data)
 		}
 		i++;
 	}
-	cout << endl;
+	outputLog << "\t" << DMStoSecond(latY) << endl;
+	outputLog << DMStoSecond(longX) << "\t" << "\t" << DMStoSecond(longY) << endl;
+	outputLog << "\t" << DMStoSecond(latX) << endl;
+	outputLog << endl;
 }
 
 template <typename T>
-void import(string databaseFile, queue<T>& data)
+void importCmd(string databaseFile, queue<T>& data)
 {
+	cout << "Importing database..." << endl;
 	while (!data.empty())
 	{
 		if (data.size() == 1)
@@ -415,17 +523,22 @@ void import(string databaseFile, queue<T>& data)
 		}
 		else
 		{
-			cout << data.front() << ", this might take a while..." << endl;
+			if (data.front() == "NM_All.txt")
+			{
+				checkSp = true;
+			}
+			outputLog << data.front() << endl;
 			readDatabase(data.front());
 			data.pop();
 		}
 	}
-	cout << endl;
+	outputLog << endl;
 }
 
 template <typename T>
-void debug(string databaseFile, queue<T>& data)
+void debugCmd(string databaseFile, queue<T>& data, string logFile)
 {
+	cout << "Debug using ";
 	while (!data.empty())
 	{
 		if (data.size() == 1)
@@ -434,16 +547,34 @@ void debug(string databaseFile, queue<T>& data)
 		}
 		else
 		{
-			cout << data.front() << " ";
+			if (data.front() == "hash")
+			{
+				cout << "Hash Table..." << endl;
+				outputLog << "Hash Table: " << endl;
+				hashtable.display(logFile);
+			}
+			else if (data.front() == "quad")
+			{
+				cout << "Quad Tree..." << endl;
+				outputLog << "Quad Tree: " << endl;
+				quadTree->displayTree(quadTree, logFile);
+			}
+			else if (data.front() == "pool")
+			{
+				cout << "Cache Pool..." << endl;
+				outputLog << "Cache Pool: " << endl;
+				pool.display(logFile);
+			}
 			data.pop();
 		}
 	}
-	cout << endl;
+	outputLog << endl;
 }
 
 template <typename T>
-void whatisat(string databaseFile, queue<T>& data)
+void whatisatCmd(string databaseFile, queue<T>& data)
 {
+	cout << "Searching by Quad Tree..." << endl;
 	string ln, lt;
 	int i = 0;
 	while (!data.empty())
@@ -466,15 +597,15 @@ void whatisat(string databaseFile, queue<T>& data)
 			i++;
 		}
 	}
-	cout <<"(" << ln << "," << lt << ")"<< endl;
-	dataSearch(1, lt, ln, "", "", databaseFile);
+	outputLog <<"(" << DMStoString(ln) << "," << DMStoString(lt) << ")"<< endl;
+	dataSearch(1, lt, ln, "", "", "", databaseFile);
 }
 
 template <typename T>
-void whatis(string databaseFile, queue<T>& data)
+void whatisCmd(string databaseFile, queue<T>& data)
 {
+	cout << "Searching by Hash Table..." << endl;
 	string input;
-	
 	while (!data.empty())
 	{
 		if (data.size() == 1)
@@ -488,14 +619,15 @@ void whatis(string databaseFile, queue<T>& data)
 		}
 	}
 	input.pop_back();
-	cout << input << endl;
-	dataSearch(0, input, "", "", "", databaseFile);
+	outputLog << input << endl;
+	dataSearch(0, input, "", "", "", "", databaseFile);
 }
 
 template <typename T>
-void whatisin(string databaseFile, queue<T>& data)
+void whatisinCmd(string databaseFile, queue<T>& data)
 {
-	string ln, lt, offsetLn, offsetLt;
+	cout << "Searching by Quad Tree..." << endl;
+	string ln, lt, offsetLn, offsetLt, filter;
 	int i = 0;
 	bool lng = false;
 	bool flt = false;
@@ -544,17 +676,21 @@ void whatisin(string databaseFile, queue<T>& data)
 				flt = true;
 				if (i == 1)
 				{
-					lt = data.front();
+					filter = data.front();
 				}
 				else if (i == 2)
 				{
-					ln = data.front();
+					lt = data.front();
 				}
 				else if (i == 3)
 				{
-					offsetLt = data.front();
+					ln = data.front();
 				}
 				else if (i == 4)
+				{
+					offsetLt = data.front();
+				}
+				else if (i == 5)
 				{
 					offsetLn = data.front();
 				}
@@ -597,20 +733,20 @@ void whatisin(string databaseFile, queue<T>& data)
 	}
 	if (lng)
 	{
-		cout << "(" << ln << " +/- " << offsetLn << "," << lt << " +/- " << offsetLt << ")" << endl;
-		dataSearch(3, lt, ln, offsetLt, offsetLn, databaseFile);
+		outputLog << "(" << DMStoString(ln) << " +/- " << offsetLn << ", " << DMStoString(lt) << " +/- " << offsetLt << ")" << endl;
+		dataSearch(3, lt, ln, offsetLt, offsetLn, "", databaseFile);
 	}
 	else if (flt)
 	{
-		cout << "(" << ln << " +/- " << offsetLn << "," << lt << " +/- " << offsetLt << ")" << endl;
-		//dataSearch(4, lt, ln, offsetLt, offsetLn, databaseFile);
+		outputLog << "(" << DMStoString(ln) << " +/- " << offsetLn << ", " << DMStoString(lt) << " +/- " << offsetLt << ")" << " with filter: "<< filter << endl;
+		dataSearch(4, lt, ln, offsetLt, offsetLn, filter, databaseFile);
 	}
 	else
 	{
-		cout << "(" << ln <<" +/- " << offsetLn << "," << lt << " +/- " << offsetLt << ")" << endl;
-		dataSearch(2, lt, ln, offsetLt, offsetLn, databaseFile);
+		outputLog << "(" << DMStoString(ln) <<" +/- " << offsetLn << ", " << DMStoString(lt) << " +/- " << offsetLt << ")" << endl;
+		dataSearch(2, lt, ln, offsetLt, offsetLn, "", databaseFile);
 	}
-	cout << endl;
+	outputLog << endl;
 }
 
 template <typename T>
@@ -624,14 +760,14 @@ void execute(int cmd, queue<T>& data, string dataFile, string logFile)
 	switch (cmd)
 	{
 		case 1:
-			cout << "Execute CMD World: " << endl << "World boundaries are set to: " << endl;
-			world(dataFile, data);
+			outputLog << "Execute CMD World: " << endl << "World boundaries are set to: " << endl;
+			worldCmd(dataFile, data);
 			cmdStat = 0;
 			break;
 		case 2:
-			cout << "Execute CMD Import: ";
-			cout << "Importing ";
-			import(dataFile, data);
+			outputLog << "Execute CMD Import: ";
+			outputLog << "Importing ";
+			importCmd(dataFile, data);
 			writeDatabase(dataFile);
 			hashing();
 			buildQuadTree();
@@ -639,26 +775,27 @@ void execute(int cmd, queue<T>& data, string dataFile, string logFile)
 			cmdStat = 0;
 			break;
 		case 3:
-			cout << "Execute CMD Debug: ";
-			debug(dataFile, data);
+			outputLog << "Execute CMD Debug: ";
+			debugCmd(dataFile, data, logFile);
 			cmdStat = 0;
 			break;
 		case 4:
-			cout << "Execute CMD What_is_at: ";
-			whatisat(dataFile, data);
+			outputLog << "Execute CMD What_is_at: ";
+			whatisatCmd(dataFile, data);
 			cmdStat = 0;
 			break;
 		case 5:
-			cout << "Execute CMD What_is: ";
-			whatis(dataFile, data);
+			outputLog << "Execute CMD What_is: ";
+			whatisCmd(dataFile, data);
 			cmdStat = 0;
 			break;
 		case 6:
-			cout << "Execute CMD What_is_in: ";
-			whatisin(dataFile, data);
+			outputLog << "Execute CMD What_is_in: ";
+			whatisinCmd(dataFile, data);
 			cmdStat = 0;
 			break;
 	}
+	
 }
 
 void parser(string scriptFile, string dataFile, string logFile)
@@ -666,7 +803,7 @@ void parser(string scriptFile, string dataFile, string logFile)
 	ifstream file(scriptFile);
 	string line;
 	queue<string> data;
-
+	outputLog.open(logFile, fstream::app);
 	while (getline(file, line))
 	{
 		
@@ -685,7 +822,6 @@ void parser(string scriptFile, string dataFile, string logFile)
 				else if (word == "import")
 				{
 					execute(cmdStat, data, dataFile, logFile);
-					cout << "Finished!" << endl;
 					cmdStat = 2;
 				}
 				else if (word == "debug")
@@ -720,11 +856,17 @@ void parser(string scriptFile, string dataFile, string logFile)
 			while (ss);
 		}
 	}
+	outputLog << "Execute CMD: Quit!" << endl;
+	outputLog.close();
 }
 
 
 int main()
 {
-	parser("DemoScript02.txt", "db02.txt", "Log02.txt");
+	outputLog.open("Log07.txt", fstream::trunc);
+	outputLog.close();
+	cout << "Executing script, this could take very long for large datafiles" << endl;
+	parser("DemoScript07.txt", "db07.txt", "Log07.txt");
+	cout << "Finish! Check the Log file for results" << endl;
 	return 0;
 }

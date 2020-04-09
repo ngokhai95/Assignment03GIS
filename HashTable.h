@@ -140,6 +140,7 @@ public:
             expandAndRehash();
         }
         int hkey = (*hash)(key) % c;
+        srand(hkey);
         //while hash key status is occupied , create a different hash key value
         while (status[hkey] == OCCUPIED)
         {
@@ -150,7 +151,7 @@ public:
             }
             else
             {
-                hkey = (1 + (*q)(hkey)) % c;
+                hkey = (rand() + (*q)(hkey)) % c;
             }
         }
         //when found empty space, assign key value to hash key and assign its status to occupied
@@ -167,6 +168,7 @@ public:
     vector<int> search(string key)
     {
         int hkey = (*hash)(key) % c;
+        srand(hkey);
         //while hash key status is not empty, if the hash key status is occupied and its bucket value is the same as the key then return true
         while (status[hkey] != EMPTY)
         {
@@ -176,9 +178,9 @@ public:
                 return buckets[hkey].second;
             }
             //create a different hash key value
-            hkey = (1 + (*q)(hkey)) % c;
+            hkey = (rand() + (*q)(hkey)) % c;
         }
-        return { 0 };
+        return {};
     }
 
     bool erase(string key)
@@ -188,6 +190,7 @@ public:
             expandAndRehash();
         }
         int hkey = (*hash)(key) % c;
+        srand(hkey);
         //while the status of the has key is not empty, if its bucket value is the key, set its value to NULL and set its status to deleted.
         while (status[hkey] != EMPTY)
         {
@@ -198,7 +201,7 @@ public:
                 return true;
             }
             //create a different hash key value
-            hkey = (1 + (*q)(hkey)) % c;
+            hkey = (rand() + (*q)(hkey)) % c;
         }
         return false;
     }
@@ -208,19 +211,24 @@ public:
         return numCollisions;
     }
 
-    void display()
+    void display(string logFile)
     {
+        ofstream outputLog;
+        outputLog.open(logFile, fstream::app);
+
         for (int i = 0; i < buckets.size(); i++)
         {
             if (status[i] == OCCUPIED)
             {
-                cout << i << ": " << buckets[i].first << ", [";
+                outputLog << i << ": " << buckets[i].first << ", [";
                 for (auto value : buckets[i].second)
                 {
-                    cout << value << ", ";
+                    outputLog << value;
                 }
+                outputLog << "]" << endl;
             }
-            cout <<"]" << endl;
+            
         }
+        outputLog.close();
     }
 };
