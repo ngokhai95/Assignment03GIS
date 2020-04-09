@@ -9,18 +9,19 @@
 #include <vector>
 #include "HashTable.h"
 #include "QuadTree.h"
-#include "BufferPool.h"
+#include "LRUCache.h"
 
 using namespace std;
 
 int cmdStat = 0;
-vector<vector<string>> database;
+vector<vector<string>> dataPlaceholder;
+vector<string> record;
 string latX, latY, longX, longY;
 HashFunction* hashfunc = new SimpleStringHash();
 QuadraticProbing* q = new QuadraticProbing();
 Hashtable hashtable = Hashtable(1024, hashfunc, q);
 Quad* quadTree;
-BufferPool buffer(5);
+LRUCache buffer(5);
 
 void readDatabase(string fileName)
 {
@@ -104,7 +105,7 @@ void readDatabase(string fileName)
 				j++;
 			}	
 		}		
-		database.push_back(record);
+		dataPlaceholder.push_back(record);
 		i++;
 	}
 }
@@ -219,7 +220,7 @@ void import(string databaseFile, queue<T>& data)
 		}
 		else
 		{
-			cout << data.front() << " " << endl;
+			cout << data.front() << ", this might take a while..." << endl;
 			readDatabase(data.front());
 			data.pop();
 		}
@@ -266,6 +267,8 @@ void whatisat(string databaseFile, queue<T>& data)
 template <typename T>
 void whatis(string databaseFile, queue<T>& data)
 {
+	string featureName, stateAB;
+	int i = 0;
 	while (!data.empty())
 	{
 		if (data.size() == 1)
@@ -274,11 +277,20 @@ void whatis(string databaseFile, queue<T>& data)
 		}
 		else
 		{
-			cout << data.front() << " ";
+			if (i == 0)
+			{
+				featureName = data.front();
+			}
+			else if (i == 1)
+			{
+				stateAB = data.front();
+			}
 			data.pop();
+			i++;
 		}
 	}
-	cout << endl;
+	cout << featureName << " " << stateAB << endl;
+	dataSearch(0, featureName, stateAB, 0, 0, databaseFile);
 }
 
 template <typename T>
@@ -301,13 +313,12 @@ void whatisin(string databaseFile, queue<T>& data)
 
 void hashing()
 {
-	for (int i = 0; i < database.size(); i++)
+	for (auto record : dataPlaceholder)
 	{
-		if (database[i].size())
+		if (record.size())
 		{
-			hashtable.insert(database[i][2] + ":" + database[i][4], stoi(database[i][0]));
+			hashtable.insert(record[2] + ":" + record[4], stoi(record[0]));
 		}
-
 	}
 }
 
@@ -315,30 +326,84 @@ void buildQuadTree()
 {
 	quadTree = new Quad(Coordinate(DMStoSecond(longX), DMStoSecond(latX)), Coordinate(DMStoSecond(longY), DMStoSecond(latY)));
 
-	for (int i = 0; i < database.size(); i++)
+	for (auto record : dataPlaceholder)
 	{
-		if (database[i].size())
+		if (record.size())
 		{
-			Node* temp = new Node(Coordinate(DMStoSecond(database[i][9]), DMStoSecond(database[i][8])), stoi(database[i][0]));
+			Node* temp = new Node(Coordinate(DMStoSecond(record[9]), DMStoSecond(record[8])), stoi(record[0]));
 			quadTree->insert(temp);
-
 		}
 	}
 }
 
-void pooling()
+void caching(vector<string> record)
 {
-	for (int i = 0; i < database.size(); i++)
+	buffer.save(stoi(record[0]), record);
+}
+
+void writeDatabase(string fileName)
+{
+	ofstream dataFile(fileName);
+	for (auto record : dataPlaceholder)
 	{
-		if (database[i].size())
+		for (auto entry : record)
 		{
-			buffer.save(stoi(database[i][0]), database[i]);
+			dataFile << entry << " ";
 		}
+		dataFile << endl;
+	}
+}
+
+void findOffset(int offset, string dataFile)
+{
+	ifstream file(dataFile);
+	string line;
+	while (getline(file, line))
+	{
+		string word;
+		istringstream ss(line);
+		do
+		{
+			if (word == to_string(offset))
+			{
+				record.push_back(word);
+				
+			}
+		} 
+		while (ss);
+	}
+	caching(record);
+	for (auto entry : record)
+	{
+		cout << entry << " ";
+	}
+	cout << endl;
+	record.clear();
+}
+
+void dataSearch(int type, string lt, string ln, string ltOffset, string lnOffset, string dataFile)
+{
+	
+	int offSet = 0;
+	switch (type)
+	{
+		case 0: //what_is
+			offSet = hashtable.search(lt + ln);
+			findOffset(offSet, dataFile);
+			break;
+		case 1: //what_is_at
+			break;
+		case 2: //what_is_in
+			break;
+		case 3: //what_is_in -long
+			break;
+		case 4: //what_is_in -filter
+			break;
 	}
 }
 
 template <typename T>
-void execute(int cmd, queue<T>& data)
+void execute(int cmd, queue<T>& data, string dataFile)
 {
 	if (cmd == 0)
 	{
@@ -349,46 +414,42 @@ void execute(int cmd, queue<T>& data)
 	{
 		case 1:
 			cout << "Execute CMD World: " << endl << "World boundaries are set to: " << endl;
-			world("yes", data);
+			world(dataFile, data);
 			cmdStat = 0;
 			break;
 		case 2:
 			cout << "Execute CMD Import: ";
 			cout << "Importing ";
-			import("yes", data);
-			cout << "Imported! Hashing..." << endl;
+			import(dataFile, data);
 			hashing();
-			cout << "Hash Finished! Building Quad Tree..." << endl;
 			buildQuadTree();
-			cout << "Quad Tree Finished! Pooling..." << endl;
-			pooling();
-			cout << "Finished!" << endl;
+			caching();
 			cmdStat = 0;
 			break;
 		case 3:
 			cout << "Execute CMD Debug: ";
-			debug("yes", data);
+			debug(dataFile, data);
 			cmdStat = 0;
 			break;
 		case 4:
 			cout << "Execute CMD What_is_at: ";
-			whatisat("yes", data);
+			whatisat(dataFile, data);
 			cmdStat = 0;
 			break;
 		case 5:
 			cout << "Execute CMD What_is: ";
-			whatis("yes", data);
+			whatis(dataFile, data);
 			cmdStat = 0;
 			break;
 		case 6:
 			cout << "Execute CMD What_is_in: ";
-			whatisin("yes", data);
+			whatisin(dataFile, data);
 			cmdStat = 0;
 			break;
 	}
 }
 
-void parser(string scriptFile)
+void parser(string scriptFile, string dataFile, string logFile)
 {
 	ifstream file(scriptFile);
 	string line;
@@ -404,40 +465,43 @@ void parser(string scriptFile)
 			do
 			{
 				ss >> word;
+				dataPlaceholder.clear();
 				if (word == "world")
 				{
-					execute(cmdStat, data);
+					execute(cmdStat, data, dataFile);
 					cmdStat = 1;
 				}
 				else if (word == "import")
 				{
-					execute(cmdStat, data);
+					execute(cmdStat, data, dataFile);
+					writeDatabase(dataFile);
+					cout << "Finished!" << endl;
 					cmdStat = 2;
 				}
 				else if (word == "debug")
 				{
-					execute(cmdStat, data);
+					execute(cmdStat, data, dataFile);
 					cmdStat = 3;
 				}
 				else if (word == "what_is_at")
 				{
-					execute(cmdStat, data);
+					execute(cmdStat, data, dataFile);
 					cmdStat = 4;
 				}
 				else if (word == "what_is")
 				{
-					execute(cmdStat, data);
+					execute(cmdStat, data, dataFile);
 					cmdStat = 5;
 				}
 				else if (word == "what_is_in")
 				{
-					execute(cmdStat, data);
+					execute(cmdStat, data, dataFile);
 					cmdStat = 6;
 				}
 				else if (word == "quit")
 				{
-					execute(cmdStat, data);
-					cout << "Finish parsing script" << endl;
+					execute(cmdStat, data, dataFile);
+					
 				}
 				else
 				{
@@ -447,14 +511,11 @@ void parser(string scriptFile)
 			while (ss);
 		}
 	}
-
-	
 }
 
 
 int main()
 {
-	parser("DemoScript01.txt");
-	buffer.display();
+	parser("DemoScript02.txt", "db02.txt", "Log02.txt");
 	return 0;
 }

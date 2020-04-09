@@ -26,7 +26,7 @@
     <ClInclude Include="QuadTree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="BufferPool.h">
+    <ClInclude Include="LRUCache.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

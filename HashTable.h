@@ -150,7 +150,7 @@ public:
         size++;
     }
 
-    bool search(string key)
+    int search(string key)
     {
         int hkey = (*hash)(key) % c;
         srand(hkey);
@@ -159,12 +159,13 @@ public:
         {
             if (status[hkey] == OCCUPIED && buckets[hkey].first == key)
             {
-                return true;
+                
+                return buckets[hkey].second;
             }
             //create a different hash key value
             hkey = (rand() + (*q)(hkey)) % c;
         }
-        return false;
+        return 0;
     }
 
     bool erase(string key)
