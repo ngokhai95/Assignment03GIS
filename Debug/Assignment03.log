@@ -1,2 +1,11 @@
 ﻿  GIS.cpp
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp : fatal error C1041: cannot open program database 'C:\Users\ngokh\Documents\GitHub\Assignment03GIS\Debug\vc142.pdb'; if multiple CL.EXE write to the same .PDB file, please use /FS
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(43,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(96,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(101,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(213,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\LRUCache.h(53,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(179,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(199,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(231,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(261,21): warning C4018: '<': signed/unsigned mismatch
+  Assignment03.vcxproj -> C:\Users\ngokh\Documents\GitHub\Assignment03GIS\Debug\Assignment03.exe

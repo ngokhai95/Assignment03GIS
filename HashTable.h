@@ -70,7 +70,7 @@ class Hashtable {
     double size;
 
     /// All the buckets in the hashtable
-    vector<pair<string,int>> buckets;
+    vector<pair<string,vector<int>>> buckets;
 
     /// Status of all the buckets
     vector<BucketStatus> status;
@@ -84,7 +84,7 @@ class Hashtable {
     {
         cout << "More than 70% storage, Expanding and Rehashing..." << endl;
         //create 2 temp vector to hold current buckets and status data
-		vector<pair<string, int>> tempBucket = buckets;
+        vector<pair<string, vector<int>>> tempBucket = buckets;
         vector<BucketStatus> tempStatus = status;
         //resize of bucket and status by the next prime number
         int msb = mostSignificantBit(c);
@@ -102,7 +102,10 @@ class Hashtable {
         {
             if (tempStatus[i] == OCCUPIED)
             {
-                insert(tempBucket[i].first, tempBucket[i].second);
+                for (auto value : tempBucket[i].second)
+                {
+                    insert(tempBucket[i].first, value);
+                }
             }
         }
     }
@@ -137,23 +140,33 @@ public:
             expandAndRehash();
         }
         int hkey = (*hash)(key) % c;
-        srand(hkey);
         //while hash key status is occupied , create a different hash key value
         while (status[hkey] == OCCUPIED)
         {
-            hkey = (rand() + (*q)(hkey)) % c;
+            if (buckets[hkey].second.size() < 4 && buckets[hkey].first == key)
+            {
+                buckets[hkey].second.push_back(value);
+                break;
+            }
+            else
+            {
+                hkey = (1 + (*q)(hkey)) % c;
+            }
         }
         //when found empty space, assign key value to hash key and assign its status to occupied
-        status[hkey] = OCCUPIED;
-        buckets[hkey].first = key;
-		buckets[hkey].second = value;
-        size++;
+        if (status[hkey] == EMPTY)
+        {
+            status[hkey] = OCCUPIED;
+            buckets[hkey].first = key;
+            buckets[hkey].second.push_back(value);
+            size++;
+        }
+        
     }
 
-    int search(string key)
+    vector<int> search(string key)
     {
         int hkey = (*hash)(key) % c;
-        srand(hkey);
         //while hash key status is not empty, if the hash key status is occupied and its bucket value is the same as the key then return true
         while (status[hkey] != EMPTY)
         {
@@ -163,9 +176,9 @@ public:
                 return buckets[hkey].second;
             }
             //create a different hash key value
-            hkey = (rand() + (*q)(hkey)) % c;
+            hkey = (1 + (*q)(hkey)) % c;
         }
-        return 0;
+        return { 0 };
     }
 
     bool erase(string key)
@@ -175,7 +188,6 @@ public:
             expandAndRehash();
         }
         int hkey = (*hash)(key) % c;
-        srand(hkey);
         //while the status of the has key is not empty, if its bucket value is the key, set its value to NULL and set its status to deleted.
         while (status[hkey] != EMPTY)
         {
@@ -186,7 +198,7 @@ public:
                 return true;
             }
             //create a different hash key value
-            hkey = (rand() + (*q)(hkey)) % c;
+            hkey = (1 + (*q)(hkey)) % c;
         }
         return false;
     }
@@ -202,8 +214,13 @@ public:
         {
             if (status[i] == OCCUPIED)
             {
-                cout << i << ": " << buckets[i].first << ", ["<< buckets[i].second << "]" << endl;
+                cout << i << ": " << buckets[i].first << ", [";
+                for (auto value : buckets[i].second)
+                {
+                    cout << value << ", ";
+                }
             }
+            cout <<"]" << endl;
         }
     }
 };
