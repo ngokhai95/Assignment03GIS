@@ -1,0 +1,18 @@
+﻿  GIS.cpp
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(43,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(96,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(101,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(219,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\LRUCache.h(54,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(212,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(235,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(267,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(298,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(338,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(355,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(372,22): warning C4018: '<': signed/unsigned mismatch
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 918 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Assignment03.vcxproj -> C:\Users\ngokh\Documents\GitHub\Assignment03GIS\Release\Assignment03.exe

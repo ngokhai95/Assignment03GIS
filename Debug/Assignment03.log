@@ -4,11 +4,11 @@ C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(96,27): warning C401
 C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(101,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\ngokh\Documents\GitHub\Assignment03GIS\HashTable.h(219,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\ngokh\Documents\GitHub\Assignment03GIS\LRUCache.h(54,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(209,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(232,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(264,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(295,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(335,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(352,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(369,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(212,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(235,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(267,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(298,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(338,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(355,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ngokh\Documents\GitHub\Assignment03GIS\GIS.cpp(372,22): warning C4018: '<': signed/unsigned mismatch
   Assignment03.vcxproj -> C:\Users\ngokh\Documents\GitHub\Assignment03GIS\Debug\Assignment03.exe

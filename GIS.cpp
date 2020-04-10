@@ -13,6 +13,7 @@
 
 using namespace std;
 
+int cmdExec = 0;
 int cmdStat = 0;
 bool checkSp = false;
 vector<vector<string>> dataPlaceholder;
@@ -27,6 +28,8 @@ Hashtable hashtable = Hashtable(1024, hashfunc, q);
 Quad* quadTree;
 LRUCache pool(15);
 ofstream outputLog;
+ifstream checkF;
+string scriptF, dbF, logF;
 
 string DMStoString(string dms)
 {
@@ -752,6 +755,7 @@ void whatisinCmd(string databaseFile, queue<T>& data)
 template <typename T>
 void execute(int cmd, queue<T>& data, string dataFile, string logFile)
 {
+	
 	if (cmd == 0)
 	{
 		return;
@@ -763,9 +767,11 @@ void execute(int cmd, queue<T>& data, string dataFile, string logFile)
 			outputLog << "Execute CMD World: " << endl << "World boundaries are set to: " << endl;
 			worldCmd(dataFile, data);
 			cmdStat = 0;
+			cmdExec++;
 			break;
 		case 2:
-			outputLog << "Execute CMD Import: ";
+			outputLog << "--------------------------------------------------------------------------------" << endl;
+			outputLog << cmdExec <<".Execute CMD Import: ";
 			outputLog << "Importing ";
 			importCmd(dataFile, data);
 			writeDatabase(dataFile);
@@ -773,26 +779,35 @@ void execute(int cmd, queue<T>& data, string dataFile, string logFile)
 			buildQuadTree();
 			dataPlaceholder.clear();
 			cmdStat = 0;
+			cmdExec++;
 			break;
 		case 3:
-			outputLog << "Execute CMD Debug: ";
+			outputLog << "--------------------------------------------------------------------------------" << endl;
+			outputLog << cmdExec << ".Execute CMD Debug: ";
 			debugCmd(dataFile, data, logFile);
 			cmdStat = 0;
+			cmdExec++;
 			break;
 		case 4:
-			outputLog << "Execute CMD What_is_at: ";
+			outputLog << "--------------------------------------------------------------------------------" << endl;
+			outputLog << cmdExec << ".Execute CMD What_is_at: ";
 			whatisatCmd(dataFile, data);
 			cmdStat = 0;
+			cmdExec++;
 			break;
 		case 5:
-			outputLog << "Execute CMD What_is: ";
+			outputLog << "--------------------------------------------------------------------------------" << endl;
+			outputLog << cmdExec << ".Execute CMD What_is: ";
 			whatisCmd(dataFile, data);
 			cmdStat = 0;
+			cmdExec++;
 			break;
 		case 6:
-			outputLog << "Execute CMD What_is_in: ";
+			outputLog << "--------------------------------------------------------------------------------" << endl;
+			outputLog << cmdExec << ".Execute CMD What_is_in: ";
 			whatisinCmd(dataFile, data);
 			cmdStat = 0;
+			cmdExec++;
 			break;
 	}
 	
@@ -856,17 +871,35 @@ void parser(string scriptFile, string dataFile, string logFile)
 			while (ss);
 		}
 	}
-	outputLog << "Execute CMD: Quit!" << endl;
+	outputLog << "--------------------------------------------------------------------------------" << endl;
+	outputLog << cmdExec << ".Execute CMD: Quit!" << endl;
 	outputLog.close();
 }
 
-
+void clearFile(string fileName)
+{
+	outputLog.open(fileName, fstream::trunc);
+	outputLog.close();
+}
 int main()
 {
-	outputLog.open("Log07.txt", fstream::trunc);
-	outputLog.close();
+	cout << "Enter the script file name: ";
+	cin >> scriptF;
+	checkF.open(scriptF);
+	while (checkF.fail()) 
+	{
+		cout << "Could not find the script file. Please re enter the correct file name: ";
+		cin >> scriptF;
+		checkF.open(scriptF);
+	}
+	checkF.close();
+	cout << "Enter the database file name: ";
+	cin >> dbF;
+	cout << "Enter the log file name: ";
+	cin >> logF;
+	clearFile(logF);
 	cout << "Executing script, this could take very long for large datafiles" << endl;
-	parser("DemoScript07.txt", "db07.txt", "Log07.txt");
+	parser(scriptF, dbF, logF);
 	cout << "Finish! Check the Log file for results" << endl;
 	return 0;
 }

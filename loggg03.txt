@@ -1,0 +1,44 @@
+Execute CMD World: 
+World boundaries are set to: 
+	138930
+-288240		-285660
+	136350
+
+Execute CMD Import: Importing VA_Highland.txt
+
+Execute CMD Import: Importing VA_Bath.txt
+
+Execute CMD What_is_in: (079d40m39s West +/- 60, 38d12m57s North +/- 120)
+
+The following 7 feature was found: 
+
+52: Bolar Gap VA  (079d40m53s West, 38d13m08s North)
+204: Little Valley VA  (079d40m40s West, 38d13m03s North)
+205: Little Valley Run VA  (079d40m40s West, 38d13m03s North)
+474: Healing Springs 1673640  (, )
+489: Green Valley 1673655  (, )
+413: Millboro 06/11/2007  (, )
+416: White Rock Mountain VA  (079d39m39s West, 38d11m26s North)
+
+Execute CMD What_is_in: (079d44m57s West +/- 30, 38d16m21s North +/- 1200)
+
+The following 16 feature was found: 
+
+122: Doyle Cemetery VA  (079d45m20s West, 38d14m36s North)
+143: Gillam Run VA  (079d45m18s West, 37d57m35s North)
+256: Oak Grove Church VA  (079d45m16s West, 37d57m36s North)
+466: Williamsville 1529  (, )
+249: Muddy Run Spring VA  (079d45m03s West, 38d06m23s North)
+455: Healing Springs 1499613  (, )
+55: Bonner Mountain VA  (079d45m01s West, 38d05m00s North)
+315: Piney Mountain Trail VA  (079d45m01s West, 38d05m16s North)
+2: Stouts Creek VA  (079d45m00s West, 37d59m15s North)
+13: Barney Run VA  (079d45m00s West, 38d01m45s North)
+287: Rocky Ridge VA  (079d44m56s West, 38d09m08s North)
+86: Cave Run VA  (079d44m55s West, 38d10m04s North)
+366: Warm Springs Mountain Trail VA  (079d44m42s West, 38d05m13s North)
+471: Bath Alum 1673637  (, )
+288: Rocky Run VA  (079d44m32s West, 38d10m28s North)
+331: South Piney Mountain Trail VA  (079d44m29s West, 38d03m40s North)
+
+Execute CMD: Quit!
